@@ -4,12 +4,17 @@ from src.auth.router import router as auth_router
 from src.users.router import router as users_router
 from src.database.core import engine, Base
 
-Base.metadata.create_all(bind=engine)
-
+def life_span(app: FastAPI):
+    print("Starting up...")
+    Base.metadata.create_all(bind=engine)
+    yield
+    print("Shutting down...")
+    
 app = FastAPI(
     title="Startup Investment Platform API",
     description="API for connecting startups and investors.",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=life_span
 )
 
 app.add_middleware(
