@@ -35,3 +35,11 @@ class UserRead(BaseModel):
 
     class Config:
         from_attributes = True
+        
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = Field(None, min_length=3, max_length=50)
+    avatar_url: Optional[HttpUrl] = None
+    bio: Optional[str] = None
+    website_url: Optional[HttpUrl] = None
+    location: Optional[str] = None
+    
