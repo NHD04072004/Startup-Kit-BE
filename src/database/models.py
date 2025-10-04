@@ -138,7 +138,6 @@ class ProjectVersion(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     project = relationship("Project", back_populates="versions")
-    blockchain_proof = relationship("BlockchainProof", back_populates="version", uselist=False, cascade="all, delete-orphan")
 
 
 # --- MODULE: KẾT NỐI VÀ TƯƠNG TÁC ---
