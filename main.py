@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.auth.router import router as auth_router
 from src.users.router import router as users_router
+from src.projects.router import router as projects_router
 from src.database.core import engine, Base
 
 def life_span(app: FastAPI):
@@ -27,6 +28,7 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(projects_router)
 
 @app.get("/")
 def read_root():
