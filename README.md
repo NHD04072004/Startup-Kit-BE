@@ -49,15 +49,15 @@ Startup Investment Platform API cung cấp nền tảng để giúp các startup
 
 ```
 .
-├── alembic/                 # Alembic configuration & migration scripts
+├── alembic/                 # Alembic configuration & 
 │   └── versions/
 ├── main.py                  # FastAPI app entrypoint
 ├── requirements.txt         # Python dependencies
 ├── src/
-│   ├── auth/                # Authentication routers, schemas, services
+│   ├── auth/                # Authentication routers, schemas, 
 │   ├── core/                # Config & security utilities
 │   ├── database/            # DB engine, session, and models
-│   └── users/               # User-facing routers, schemas, services
+│   └── users/               # User-facing routers, schemas
 └── README.md
 ```
 
