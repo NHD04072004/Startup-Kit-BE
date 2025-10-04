@@ -47,3 +47,10 @@ def update_user_password_me(
         )
         
     return {"message": "Password updated successfully"}
+
+@router.delete("/me", status_code=status.HTTP_200_OK)
+def deactivate_user_me(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    service.deactivate_user(db=db, current_user=current_user)

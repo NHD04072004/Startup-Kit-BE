@@ -44,3 +44,14 @@ def update_user_password(db: Session, current_user: User, password_update: schem
     db.commit()
     
     return True
+
+def deactivate_user(db: Session, current_user: User) -> User:
+    if not current_user.is_active:
+        return current_user
+
+    current_user.is_active = False
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
+    
+    return current_user
