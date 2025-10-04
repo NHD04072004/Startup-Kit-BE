@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from src.core.security import get_password_hash
+from src.core.security import get_password_hash, verify_password
 from . import schemas
 from src.database.models import User, UserProfile
 
@@ -33,3 +33,14 @@ def update_user(db: Session, current_user: User, user_update: schemas.UserUpdate
     db.commit()
     db.refresh(current_user)
     return current_user
+
+def update_user_password(db: Session, current_user: User, password_update: schemas.UserPasswordUpdate) -> bool:
+    if not verify_password(password_update.current_password, current_user.hashed_password):
+        return False
+
+    new_hashed_password = get_password_hash(password_update.new_password)
+    current_user.hashed_password = new_hashed_password
+    db.add(current_user)
+    db.commit()
+    
+    return True
