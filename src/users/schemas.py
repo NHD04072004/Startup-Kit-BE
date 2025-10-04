@@ -17,14 +17,14 @@ class UserProfileRead(UserProfileBase):
     class Config:
         from_attributes = True
 
-class UserCreate(BaseModel):
+class UserCreate(BaseModel):  # Đăng ký người dùng
     full_name: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
     password: str = Field(..., min_length=6, max_length=72)
     password_confirm: str
     role: UserRole
 
-class UserRead(BaseModel):
+class UserRead(BaseModel):  # Đọc thông tin người dùng
     id: int
     full_name: str
     email: EmailStr
@@ -35,3 +35,15 @@ class UserRead(BaseModel):
 
     class Config:
         from_attributes = True
+        
+class UserUpdate(BaseModel):  # Cập nhật thông tin người dùng
+    full_name: Optional[str] = Field(None, min_length=3, max_length=50)
+    avatar_url: Optional[HttpUrl] = None
+    bio: Optional[str] = None
+    website_url: Optional[HttpUrl] = None
+    location: Optional[str] = None
+    
+class UserPasswordUpdate(BaseModel):  # Cập nhật mật khẩu
+    current_password: str
+    new_password: str = Field(..., min_length=6, max_length=72)
+    new_password_confirm: str
