@@ -31,6 +31,7 @@ Startup Kit là một nền tảng nhằm hỗ trợ các Founder và đội ng�
 - **Migrations**: Alembic
 - **Data Validation**: Pydantic
 - **Authentication**: JWT & Passlib
+- **Package Manager**: UV (Astral) - Python package manager cực nhanh
 
 ## Cấu trúc dự án
 
@@ -53,52 +54,153 @@ Startup Kit là một nền tảng nhằm hỗ trợ các Founder và đội ng�
 
 ## Hướng dẫn cài đặt và khởi chạy
 
-### 1. Yêu cầu
+### Phương pháp 1: Sử dụng UV (Khuyến nghị) ⚡
 
-- Python 3.10+
-- Pip & Venv (hoặc công cụ quản lý môi trường ảo khác như Poetry)
+**Yêu cầu:**
+- Python 3.12+
+- UV package manager
 - MySQL Server đang hoạt động
 
-### 2. Cài đặt
+**1. Cài đặt UV:**
 
-1.  **Clone repository:**
-    ```bash
-    git clone https://your-repository-url/Startup-kit-BE.git
-    cd Startup-kit-BE
-    ```
+- Windows (PowerShell):
 
-2.  **Tạo và kích hoạt môi trường ảo:**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # Trên Windows: venv\Scripts\activate
-    ```
-
-3.  **Cài đặt các thư viện cần thiết:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4.  **Cấu hình biến môi trường:**
-    -   Tạo một file `.env` bằng cách sao chép từ file `.env.example`.
-        ```bash
-        cp .env.example .env
-        ```
-    -   Mở file `.env` và chỉnh sửa các giá trị cho phù hợp với môi trường của bạn (đặc biệt là `DATABASE_URL` và `SECRET_KEY`).
-
-5.  **Chạy Database Migrations:**
-    -   Mở file `alembic.ini` và chắc chắn rằng dòng `sqlalchemy.url` trỏ đúng đến biến môi trường của bạn hoặc chuỗi kết nối CSDL.
-    -   Áp dụng tất cả các migrations để tạo bảng trong CSDL:
-        ```bash
-        alembic upgrade head
-        ```
-
-### 3. Khởi chạy Server
-
-Chạy server với Uvicorn:
-```bash
-uvicorn src.main:app --reload
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
-API sẽ có sẵn tại `http://127.0.0.1:8000`.
+
+- macOS/Linux:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+- Hoặc với pip:
+
+```bash
+pip install uv
+```
+
+**2. Clone repository:**
+```bash
+git clone https://github.com/NHD04072004/Startup-Kit-BE.git
+cd Startup-Kit-BE
+```
+
+**3. Cài đặt dependencies:**
+```bash
+# UV tự động tạo virtual environment và cài đặt dependencies
+uv sync
+```
+
+**4. Cấu hình biến môi trường:**
+```bash
+cp .env.example .env
+
+# Chỉnh sửa .env với thông tin của bạn
+```
+
+**5. Chạy migrations:**
+```bash
+uv run alembic upgrade head
+```
+
+**6. Khởi chạy server:**
+```bash
+uv run main.py
+
+# Hoặc sử dụng uvicorn
+uv run uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+API sẽ chạy tại `http://0.0.0.0:8000`
+
+---
+
+### Phương pháp 2: Sử dụng Docker 🐳
+
+**Yêu cầu:**
+- Docker Engine 20.10+
+- Docker Compose 2.0+
+
+**Khởi chạy nhanh:**
+
+```bash
+# 1. Copy và cấu hình file môi trường
+cp .env.example .env
+
+# 2. Chỉnh sửa .env với thông tin của bạn
+# 3. Build và khởi chạy containers
+docker-compose up -d
+
+# 4. Ứng dụng sẽ chạy tại http://localhost:8000
+```
+
+**Xem logs:**
+```bash
+docker-compose logs -f app
+```
+
+**Chạy migrations:**
+```bash
+docker-compose exec app alembic upgrade head
+```
+
+**Dừng ứng dụng:**
+```bash
+docker-compose down
+```
+
+📖 **Chi tiết đầy đủ**: Xem [DOCKER_GUIDE.md](./DOCKER_GUIDE.md) để biết thêm về development mode, production mode, và best practices.
+
+---
+
+### Phương pháp 3: Cài đặt truyền thống với pip
+
+**Yêu cầu:**
+- Python 3.12+
+- Pip & Venv
+- MySQL Server đang hoạt động
+
+**1. Clone repository:**
+```bash
+git clone https://github.com/NHD04072004/Startup-Kit-BE.git
+cd Startup-Kit-BE
+```
+
+**2. Tạo và kích hoạt môi trường ảo:**
+```bash
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# Linux/Mac
+source venv/bin/activate
+```
+
+**3. Cài đặt dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+**4. Cấu hình môi trường:**
+```bash
+cp .env.example .env
+# Chỉnh sửa .env với thông tin của bạn
+```
+
+**5. Chạy migrations:**
+```bash
+alembic upgrade head
+```
+
+**6. Khởi chạy server:**
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+API sẽ chạy tại `http://localhost:8000`
 
 ## Tài liệu API
 
@@ -111,11 +213,16 @@ Bạn cũng có thể truy cập tài liệu API tương tác (Swagger UI) do Fa
 ## Quản lý Database Migrations
 
 Khi bạn thay đổi các models trong `src/database/models.py`, hãy tạo một migration mới:
+
+**Với UV:**
+```bash
+uv run alembic revision --autogenerate -m "Mô tả thay đổi của bạn"
+uv run alembic upgrade head
+```
+
+**Với pip/venv truyền thống:**
 ```bash
 alembic revision --autogenerate -m "Mô tả thay đổi của bạn"
-```
-Sau đó, áp dụng migration:
-```bash
 alembic upgrade head
 ```
 
